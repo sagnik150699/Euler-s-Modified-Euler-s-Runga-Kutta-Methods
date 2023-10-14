@@ -1,92 +1,94 @@
 #include<stdio.h>
 #include<math.h>
-float f1(float x,float y,float h)
-{
-    return (h*(x+y));
+
+const float TOLERANCE = 0.0001;
+
+float eulerFunction(float x, float y, float h) {
+    return (h * (x + y));
 }
-void eulers(float x,float y,float a,float h)
-{
-    while(x<=a)
-    {
-        y=y+f1(x,y,h);
-        x=x+h;
-        printf("%0.3f \t%0.3f \n",x,y);
+
+void eulerMethod(float x, float y, float a, float h) {
+    while (x <= a) {
+        y = y + eulerFunction(x, y, h);
+        x = x + h;
+        printf("%0.3f \t%0.3f \n", x, y);
     }
 }
-float f2(float x,float y)
-{
-    return ((x*x)+(y*y*x));
+
+float rungeKuttaFunction(float x, float y) {
+    return (x * x) + (y * y * x);
 }
-void rk(float x,float y,float a,float h)
-{
-    float k1,k2,k3,k4,k;
+
+void rungeKuttaMethod(float x, float y, float a, float h) {
+    float k1, k2, k3, k4, k;
     int i;
-    float n=(a-x)/h;
-    for(i=0;i<n;i++) 
-    {
-        k1=h*f2(x,y);
-        k2=h*f2(x+(h/2),y+(k1/2));
-        k3=h*f2(x+(h/2),y+(k2/2));
-        k4=h*f2(x+h,y+k3);
-        k=(k1+(2*k2)+(2*k3)+k4)/6;
-        y=y+k;x=x+h;
+    float n = (a - x) / h;
+    for (i = 0; i < n; i++) {
+        k1 = h * rungeKuttaFunction(x, y);
+        k2 = h * rungeKuttaFunction(x + (h / 2), y + (k1 / 2));
+        k3 = h * rungeKuttaFunction(x + (h / 2), y + (k2 / 2));
+        k4 = h * rungeKuttaFunction(x + h, y + k3);
+        k = (k1 + (2 * k2) + (2 * k3) + k4) / 6;
+        y = y + k;
+        x = x + h;
     }
-    printf("The required value= %.3f\n",y);
+    printf("The required value= %.3f\n", y);
 }
-float f3(float x,float y)
-{
-    return ((x*x)+y);
+
+float modifiedEulerFunction(float x, float y) {
+    return (x * x) + y;
 }
-void meulers(float x,float y,float a,float h)
-{
-    float m0;
-    float k,t=0;
-    float m1,m2,w;
+
+void modifiedEulerMethod(float x, float y, float a, float h) {
+    float m0, k, t = 0, m1, m2, w;
     int i;
     printf("The respective values of x and y are...\n");
-    printf("x \t y \n"); 
-    for(i=0;x<=a;i++)
-    {
-        w=100;
-        m0=f3(x,y);
-        printf("%.3f\t%.3f\n",x,y);
-        x=x+h;
-        k=y;
-        while(w>0.0001)
-        {
-            m1=f3(x,k);
-            m2=(m0+m1)/2;
-            t=y+(m2*h);
-            w=k-t;
-            w=fabs(w);
-            k=t;
-           // printf("%.3f\n",t);
+    printf("x \t y \n");
+    for (i = 0; x <= a; i++) {
+        w = TOLERANCE * 10;  // Initial value greater than TOLERANCE
+        m0 = modifiedEulerFunction(x, y);
+        printf("%.3f\t%.3f\n", x, y);
+        x = x + h;
+        k = y;
+        while (w > TOLERANCE) {
+            m1 = modifiedEulerFunction(x, k);
+            m2 = (m0 + m1) / 2;
+            t = y + (m2 * h);
+            w = fabs(k - t);
+            k = t;
         }
-        y=t;
+        y = t;
     }
 }
-int main()
-{
-    float x,y,a,h;
+
+int main() {
+    // Hardcoded values for demonstration
+    float x = 0.0;  // Starting x value
+    float y = 1.0;  // Starting y value
+    float a = 2.0;  // x value for which y is to be found
+    float h = 0.1;  // Step size
+    int c = 1;      // Choice of method: 1 for Euler's, 2 for Modified Euler's, 3 for Runge-Kutta
+
+    /* Uncomment below for user input
     printf("Enter a point (x,y)\n");
-    scanf("%f%f",&x,&y);
+    scanf("%f%f", &x, &y);
     printf("Enter the x for which the value of y is to be found\n");
-    scanf("%f",&a);
+    scanf("%f", &a);
     printf("Enter value of h\n");
-    scanf("%f",&h);
+    scanf("%f", &h);
     printf("1-->Euler's\n2-->Modified eulers\n3-->Runga kutta\nEnter choice\n");
-    int c;
-    scanf("%d",&c);
-    switch (c)
-    {
+    scanf("%d", &c);
+    */
+
+    switch (c) {
         case 1:
-            eulers(x,y,a,h);
+            eulerMethod(x, y, a, h);
             break;
         case 2:
-            meulers(x,y,a,h);
+            modifiedEulerMethod(x, y, a, h);
             break;
         case 3:
-            rk(x,y,a,h);
+            rungeKuttaMethod(x, y, a, h);
             break;
         default:
             printf("Invalid choice\n");
