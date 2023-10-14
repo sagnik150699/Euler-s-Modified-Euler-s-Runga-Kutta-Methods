@@ -1,6 +1,5 @@
 name: Run C Program
 
-
 on:
   push:
     branches:
@@ -18,7 +17,7 @@ jobs:
       run: sudo apt-get install -y gcc
 
     - name: Compile C program
-      run: gcc -o main.c
+      run: gcc main.c -o my_program
 
     - name: Run C program
-      run: ./main.c
+      run: ./my_program
