@@ -1,0 +1,20 @@
+name: Run C Program
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install GCC
+      run: sudo apt-get install -y gcc
+
+    - name: Compile C program
+      run: gcc -o main.c
+
+    - name: Run C program
+      run: ./main.c
